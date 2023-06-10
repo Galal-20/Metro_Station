@@ -8,4 +8,6 @@
     <string name="line_two">Line Two</string>
     <string name="line_one">Line One</string>
     <string name="map">Map</string>
+    <string name="Switch">Switch</string>
+    <string name="start_trip">Start Trip</string>
 </resources>
