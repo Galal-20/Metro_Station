@@ -10,4 +10,5 @@
     <string name="map">Map</string>
     <string name="Switch">Switch</string>
     <string name="start_trip">Start Trip</string>
+    <string name="location">Location</string>
 </resources>

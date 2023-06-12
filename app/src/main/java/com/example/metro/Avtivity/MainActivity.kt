@@ -1,29 +1,59 @@
 package com.example.metro.Avtivity
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.pdf.PdfDocument.Page
+import android.location.Location
+import android.location.LocationManager
+import android.location.LocationRequest
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.motion.widget.Debug.getLocation
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.location.LocationManagerCompat.getCurrentLocation
 import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
 import com.example.metro.R
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputLayout
+import java.security.KeyStore.LoadStoreParameter
+
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var textView: TextView
+    private lateinit var titleTv: TextView
     private lateinit var btn_sh:Button
+    private lateinit var location:Button
+    private lateinit var imageLogo: ImageView
+    private lateinit var tilStart: TextInputLayout
+    private lateinit var tilEnd: TextInputLayout
     lateinit var startDropDown: AutoCompleteTextView
     lateinit var endDropDown: AutoCompleteTextView
     lateinit var startAdapter: ArrayAdapter<String>
     lateinit var endAdapter: ArrayAdapter<String>
-
+    lateinit var bottomNavigation: BottomNavigationView
     val line1 = mutableListOf(
         "حلوان",
         "عين حلوان",
@@ -109,7 +139,8 @@ class MainActivity : AppCompatActivity() {
         "كيت كات"
     )
 
-    lateinit var bottomNavigation: BottomNavigationView
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private val LOCATION_PERMISSION_REQUEST_CODE = 123
 
     @SuppressLint("MissingInflatedId", "CommitPrefEdits", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,16 +149,15 @@ class MainActivity : AppCompatActivity() {
 
         fvb()
         adapter()
-
+        YoYo()
         startDropDown.setOnItemClickListener { parent, view, position, id ->
             cal()
         }
         endDropDown.setOnItemClickListener { parent, view, position, id ->
             cal()
         }
-
         bottomNavigation.setOnNavigationItemSelectedListener {
-            when(it.itemId){
+            when (it.itemId) {
                 R.id.map -> Intent(this, MapActivity::class.java).also { startActivity(it) }
                 R.id.one -> Intent(this, LineOneActivity::class.java).also { startActivity(it) }
                 R.id.Two -> Intent(this, LineTwoActivity::class.java).also { startActivity(it) }
@@ -135,13 +165,27 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        location.setOnClickListener { getLocation()
         }
 
+
+    }
+
+    fun YoYo(){
+        YoYo.with(Techniques.FadeIn).duration(3000).playOn(imageLogo)
+        YoYo.with(Techniques.FadeIn).duration(3000).playOn(titleTv)
+        YoYo.with(Techniques.FadeIn).duration(3000).playOn(btn_sh)
+        YoYo.with(Techniques.FadeIn).duration(3000).playOn(location)
+        YoYo.with(Techniques.FadeIn).duration(4000).playOn(tilStart)
+        YoYo.with(Techniques.FadeIn).duration(4000).playOn(tilEnd)
+    }
     fun switch(view: View){
         val temp = startDropDown.text.toString()
         startDropDown.setText(endDropDown.text.toString(),false)
         endDropDown.setText(temp,false)
         cal()
+        YoYo.with(Techniques.SlideInUp).duration(1000).playOn(textView)
     }
     private fun adapter(){
         //Adapter
@@ -149,6 +193,12 @@ class MainActivity : AppCompatActivity() {
         endAdapter = ArrayAdapter(this, R.layout.drop_down_list, line1 + line2 + line3)
         startDropDown.setAdapter(startAdapter)
         endDropDown.setAdapter(endAdapter)
+        imageLogo = findViewById(R.id.textTitle)
+        titleTv = findViewById(R.id.name)
+        btn_sh = findViewById(R.id.b2)
+        location = findViewById(R.id.locationButton)
+        tilStart = findViewById(R.id.startLayout)
+        tilEnd = findViewById(R.id.endStationLayout)
     }
     private fun fvb(){
         startDropDown = findViewById(R.id.startStation)
@@ -156,6 +206,7 @@ class MainActivity : AppCompatActivity() {
         textView = findViewById(R.id.textview)
         bottomNavigation = findViewById(R.id.bottomN)
         btn_sh = findViewById(R.id.b2)
+        location = findViewById(R.id.locationButton)
     }
     @SuppressLint("SetTextI18n")
     private fun cal() {
@@ -477,7 +528,7 @@ class MainActivity : AppCompatActivity() {
         //_________________________________________________________
         if (indexFirst == -1 || indexEnd == -1) {
         }else if (statStation == endStation){
-            Toast.makeText(this, "you are in the same station" , Toast.LENGTH_SHORT).show()
+            Snackbar.make(titleTv, "You are in the same station", Snackbar.LENGTH_SHORT).show()
             textView.text = ""
         } else {
             val count = Math.abs(indexEnd - indexFirst)
@@ -504,6 +555,49 @@ class MainActivity : AppCompatActivity() {
 
         YoYo.with(Techniques.SlideInUp).duration(1000).playOn(textView)
 
+
+
     }
 
-}
+
+    // Location:
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLocation()
+            } else {
+                Snackbar.make(textView, "Location permission denied", Snackbar.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun getLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+        {
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location ->
+                    if (location != null) {
+                        val latitude = location.latitude
+                        val longitude = location.longitude
+
+                        val intentUri = Uri.parse("$latitude,$longitude")
+                        val mapIntent = Intent(Intent.ACTION_VIEW, intentUri)
+                        mapIntent.setPackage("com.google.android.apps.maps")
+                        startActivity(mapIntent)
+                    } else {
+                        Snackbar.make(titleTv, "Please open Location and check the internet", Snackbar.LENGTH_SHORT).show()
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Snackbar.make(titleTv, "Error getting location: ${e.message}", Snackbar.LENGTH_SHORT).show()
+                }
+        }else{
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),LOCATION_PERMISSION_REQUEST_CODE)
+        }
+        }
+
+    }
