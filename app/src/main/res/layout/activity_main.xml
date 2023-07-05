@@ -89,27 +89,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/b2"
-        app:layout_constraintTop_toBottomOf="@id/endStationLayout"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/locationButton"
+        app:layout_constraintTop_toBottomOf="@id/endStationLayout"
+        android:layout_marginStart="25dp"
         android:layout_marginTop="30dp"
         android:textColor="@color/white"
         android:text="@string/Switch"
         android:onClick="switch"
         tools:ignore="OnClick" />
 
+
     <com.google.android.material.button.MaterialButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/locationButton"
+        android:id="@+id/myLocationButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/endStationLayout"
-        app:layout_constraintStart_toEndOf="@id/b2"
         android:layout_marginTop="30dp"
+        android:layout_marginEnd="25dp"
         android:textColor="@color/white"
-        android:text="@string/location"
+        android:text="@string/nearby_station"
+        android:onClick="myLocation"
         tools:ignore="OnClick" />
-
 
     <TextView
         android:layout_width="0dp"
@@ -117,7 +118,7 @@
         android:id="@+id/textview"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/b2"
+        app:layout_constraintTop_toBottomOf="@+id/myLocationButton"
         android:layout_marginTop="20dp"
         android:layout_margin="20dp"
         android:textColor="@color/black"
