@@ -22,4 +22,10 @@
         android:title="@string/line_three"
         android:icon="@drawable/n3"
         />
+
+    <item
+        android:id="@+id/history"
+        android:title="@string/history"
+        android:icon="@drawable/history"
+        />
 </menu>

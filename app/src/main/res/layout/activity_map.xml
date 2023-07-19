@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Avtivity.MapActivity"
+    tools:context=".Avtivity.Activities.MapActivity"
     android:background="@color/white">
 
     <ImageView

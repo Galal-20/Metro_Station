@@ -1,4 +1,4 @@
-package com.example.metro.Avtivity
+package com.example.metro.Avtivity.Activities
 
 import android.annotation.SuppressLint
 import android.os.Build

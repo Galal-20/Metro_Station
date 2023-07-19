@@ -14,4 +14,9 @@
     <string name="stations">Stations</string>
     <string name="my_location">My Location</string>
     <string name="nearby_station">Nearby Station</string>
+    <string name="number_of_stations">Number of stations</string>
+    <string name="time_of_trip">Time of trip</string>
+    <string name="price_of_your_trip">price of your trip</string>
+    <string name="history_of_trip">History of trip</string>
+    <string name="history">History</string>
 </resources>

@@ -1,25 +1,25 @@
-package com.example.metro.Avtivity
+package com.example.metro.Avtivity.Activities
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.app.Dialog
-import android.app.ProgressDialog
 import android.content.Intent
-import android.drm.ProcessedData
 import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Process
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
+import com.example.metro.Avtivity.Activities.Stations.Companion.station
+import com.example.metro.Avtivity.DataBase.Metro
+import com.example.metro.Avtivity.DataBase.MetroDatabase
 import com.example.metro.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
@@ -131,82 +131,7 @@ class MainActivity : AppCompatActivity(), AirLocation.Callback {
         "كيت كات"
     )
     lateinit var b:AirLocation
-    private val station = arrayOf(
-        Stations("المرج الجديدة", 30.164172735692873, 31.338450144767485),
-        Stations("المرج", 30.157480208340775, 31.336619953988272),
-        Stations("عزبة النخل", 30.139503542162668, 31.324443653987665),
-        Stations("عين شمس", 30.131248374291626, 31.31895182145575),
-        Stations("المطرية", 30.1215775562348, 31.313743753986984),
-        Stations("حلمية الزيتون", 30.1138692198755, 31.313855205196177),
-        Stations("حدائق الزيتون", 30.108556212446903, 31.31031072995415),
-        Stations("سراي القبة", 30.10060986125597, 31.30507717534575),
-        Stations("حمامات القبة", 30.09145916402009, 31.298921925150385),
-        Stations("كوبري القبة", 30.089864120369374, 31.29427485251411),
-        Stations("منشية الصدر", 30.08223583607714, 31.28751303864376),
-        Stations("الدمرداش" , 30.07760368459885, 31.277800996314518),
-        Stations("غمرة", 30.06927966891068, 31.264584609807944),
-        Stations("الشهداء", 30.06134066046398, 31.245996952136622),
-        Stations("أحمد عرابي", 30.05690205572991, 31.2421185693264),
-        Stations("جمال عبد الناصر", 30.053490505252686, 31.23886160524472 ),
-        Stations("أنور السادات", 30.044377544671992, 31.23440243864253 ),
-        Stations("سعد زغلول", 30.037293337890496, 31.238426369325797 ),
-        Stations("سيدة زينب",  30.02953776954474, 31.235387880970915),
-        Stations("الملك الصالح",  30.017878090939462, 31.231060967476942),
-        Stations("مارجرجس",  30.006358919055284, 31.229553694463828),
-        Stations("الزهراء",29.995686095820805, 31.23118752514699),
-        Stations("دار السلام",29.98232618205956, 31.24228258466549),
-        Stations("حدائق المعادي",29.970475679905103, 31.250362246686457),
-        Stations("المعادي",29.962071658345927, 31.257722013766138),
-        Stations("ثكنات المعادي",29.953555782324297, 31.26294360980377),
-        Stations("طرة البلد",29.94696779610753, 31.272979996309708),
-        Stations("كوتسيكا", 29.936519302020102, 31.28185278281576),
-        Stations("طرة الأسمنت", 29.92616034052604, 31.28752293863823),
-        Stations("المعصرة", 29.906320180562815, 31.299494338637462),
-        Stations("حدائق حلوان", 29.897310237588346, 31.303938300282685),
-        Stations("وادي حوف", 29.87930259063996, 31.313599303978332),
-        Stations("جامعة حلوان", 29.869683965818957, 31.320088353977816),
-        Stations("عين حلوان",29.862804464728345, 31.324875396306805),
-        Stations("حلوان", 29.849646809846522, 31.33406909711005),
-        Stations("المنيب", 29.982859144474993, 31.2126282205509),
-        Stations("ساقية مكي", 29.99574465502056, 31.208688182817887),
-        Stations("ام المصريين", 30.005876856652552, 31.208098738640988),
-        Stations("الجيزة", 30.010942113485196, 31.207254225934772),
-        Stations("فيصل", 30.01730821304806, 31.203983525147795),
-        Stations("جامعة القاهرة", 30.023262385058064, 31.211311266103905),
-        Stations("البحوث", 30.036039841180813, 31.20017012514852),
-        Stations("الدقي", 30.038911399119115, 31.212158868053763),
-        Stations("اوبرا",30.042152000032797, 31.22500085398409),
-        Stations("محمد نجيب", 30.04549965713415, 31.244182976996694),
-        Stations("العتبة", 30.0591710616566, 31.258665552714607),
-        Stations("مسرة", 30.0710466403998, 31.24511335583321),
-        Stations("رود الفرج", 30.103749860516523, 31.18448622850022),
-        Stations("سانت تريزا", 30.088179671410828, 31.245471238643933),
-        Stations("الخلفاوي", 30.100311678164733, 31.245056700143653),
-        Stations("المظلات", 30.104387753200694, 31.245641396315428),
-        Stations("كلية الزراعة", 30.113942455671886, 31.24865916748033),
-        Stations("شبرا الخيمة", 30.124847679586587, 31.243141117217267),
-        Stations("عدلي منصور", 30.162153247623404, 31.42298481637837),
-        Stations("الهايكستب",30.145345393616847, 31.404407727414608),
-        Stations("عمر بن الخطاب", 30.14063018793476, 31.394333867481244),
-        Stations("قباء", 30.13504966571368, 31.38375572515202),
-        Stations("هشام بركات", 30.131086791334248, 31.372968182822607),
-        Stations("النزهة",30.128188722316402, 31.360173596316276),
-        Stations( "نادي الشمس", 30.12566956817781, 31.348900453987152),
-        Stations("ألف مسكن", 30.11921714086943, 31.34017626748042),
-        Stations("هيلوبوليس", 30.110176119129754, 31.33847015861617),
-        Stations("هارون", 30.101593142977435, 31.332959225429157),
-        Stations("الأهرام", 30.091929480114224, 31.326283509808633),
-        Stations("كلية البنات", 30.083644838916275, 31.328758234947617),
-        Stations("الاستاد", 30.07398700896258, 31.317101998908335),
-        Stations("أرض المعارض", 30.073507658197432, 31.300958538643414),
-        Stations("العباسية", 30.072207832485418, 31.283374999727084),
-        Stations("عبدو باشا", 30.064994563353856, 31.27474999972708),
-        Stations("باب الشعرية", 30.054385420268495, 31.255855538642773),
-        Stations("جمال عبد الناصر", 30.053722849019938, 31.238732996313626),
-        Stations("ماسبيرو", 30.055953297574977, 31.232144811655505),
-        Stations("صفاء حجازي", 30.062656263681983, 31.22260052357984),
-        Stations("كيت كات", 30.066721943701488, 31.213018009807875)
-        )
+
 
     @Suppress("UNUSED_ANONYMOUS_PARAMETER")
     @SuppressLint("MissingInflatedId", "CommitPrefEdits", "SetTextI18n")
@@ -229,6 +154,7 @@ class MainActivity : AppCompatActivity(), AirLocation.Callback {
                 R.id.one -> Intent(this, LineOneActivity::class.java).also { startActivity(it) }
                 R.id.Two -> Intent(this, LineTwoActivity::class.java).also { startActivity(it) }
                 R.id.Three -> Intent(this, LineThreeActivity::class.java).also { startActivity(it) }
+                R.id.history -> Intent(this,HistoryActivity::class.java).also { startActivity(it) }
             }
             true
         }
@@ -309,8 +235,8 @@ class MainActivity : AppCompatActivity(), AirLocation.Callback {
             val couunt2 = count2+countx2
 
             // time of trip:
-            val timeOfTrip =  count*2
-            val timeOfTrip2 =  couunt2*2
+           val timeOfTrip =  count*2
+           val timeOfTrip2 =  couunt2*2
 
             if (couunt<=couunt2){
                 val ticketPrice = when (couunt) {
@@ -329,7 +255,7 @@ class MainActivity : AppCompatActivity(), AirLocation.Callback {
                 } else {
                     line2.subList(indexEndx, indexFirstx + 1).reversed()
                 }
-                val routs = (rout1 + rout2).joinToString(", ")
+                val routs = (rout1 + rout2).joinToString(",")
 
 
 
@@ -338,6 +264,24 @@ class MainActivity : AppCompatActivity(), AirLocation.Callback {
                         "2-Time of trip is $timeOfTrip\n"+
                         "3-Price of your ticket is $ticketPrice\n"+
                         "4-Your Stations are \n${routs}"
+
+
+                val dialog = AlertDialog.Builder(this)
+                    .setTitle("Save trip")
+                    .setMessage("Do you want save your trip?")
+                    .setPositiveButton("Yes"){ _,_ ->
+                        val data = Metro(couunt,timeOfTrip,ticketPrice, routs )
+                        val save = MetroDatabase.getDatabase(this).metroDao().save(data)
+                        if (save != null){
+                            Toast.makeText(this,"Data saved", Toast.LENGTH_SHORT).show()
+                        }else Toast.makeText(this,"Empty Data", Toast.LENGTH_SHORT).show()
+                    }
+                    .setNegativeButton("No"){_,_ ->
+                        Toast.makeText(this,"Data not saved",Toast.LENGTH_SHORT).show()
+                    }.create()
+                dialog.show()
+
+
 
 
             }else{
@@ -366,6 +310,23 @@ class MainActivity : AppCompatActivity(), AirLocation.Callback {
                         "2-Time of trip is $timeOfTrip2\n"+
                         "3-Price of your ticket is $ticketPrice\n"+
                         "4-Your Stations are \n${routs2}"
+
+
+                val dialog = AlertDialog.Builder(this)
+                    .setTitle("Save trip")
+                    .setMessage("Do you want save your trip?")
+                    .setPositiveButton("Yes"){ _,_ ->
+                        val data = Metro(couunt,timeOfTrip2,ticketPrice,routs2 )
+                        val save = MetroDatabase.getDatabase(this).metroDao().save(data)
+                        if (save != null){
+                            Toast.makeText(this,"Data saved", Toast.LENGTH_SHORT).show()
+                        }else Toast.makeText(this,"Empty Data", Toast.LENGTH_SHORT).show()
+                    }
+                    .setNegativeButton("No"){_,_ ->
+                        Toast.makeText(this,"Data not saved",Toast.LENGTH_SHORT).show()
+                    }.create()
+                dialog.show()
+
 
             }
 
@@ -407,6 +368,23 @@ class MainActivity : AppCompatActivity(), AirLocation.Callback {
                     "2-Time of trip is $timeofTrip\n"+
                     "3-Price of your ticket is $ticketPrice\n"+
                     "4-Your Stations are \n${routs}"
+
+
+
+            val dialog = AlertDialog.Builder(this)
+                .setTitle("Save trip")
+                .setMessage("Do you want save your trip?")
+                .setPositiveButton("Yes"){ _,_ ->
+                    val data = Metro(couunt,timeofTrip,ticketPrice,routs )
+                    val save = MetroDatabase.getDatabase(this).metroDao().save(data)
+                    if (save != null){
+                        Toast.makeText(this,"Data saved", Toast.LENGTH_SHORT).show()
+                    }else Toast.makeText(this,"Empty Data", Toast.LENGTH_SHORT).show()
+                }
+                .setNegativeButton("No"){_,_ ->
+                    Toast.makeText(this,"Data not saved",Toast.LENGTH_SHORT).show()
+                }.create()
+            dialog.show()
         }
         //______________________________________________________________
         if (statStation in line2 && endStation in line1) {
@@ -458,6 +436,22 @@ class MainActivity : AppCompatActivity(), AirLocation.Callback {
                         "4-Your Stations are \n${routs}"
 
 
+                val dialog = AlertDialog.Builder(this)
+                    .setTitle("Save trip")
+                    .setMessage("Do you want save your trip?")
+                    .setPositiveButton("Yes"){ _,_ ->
+                        val data = Metro(couunt,timeOfTrip,ticketPrice,routs )
+                        val save = MetroDatabase.getDatabase(this).metroDao().save(data)
+                        if (save != null){
+                            Toast.makeText(this,"Data saved", Toast.LENGTH_SHORT).show()
+                        }else Toast.makeText(this,"Empty Data", Toast.LENGTH_SHORT).show()
+                    }
+                    .setNegativeButton("No"){_,_ ->
+                        Toast.makeText(this,"Data not saved",Toast.LENGTH_SHORT).show()
+                    }.create()
+                dialog.show()
+
+
             }else{
 
                 val ticketPrice = when (couunt2) {
@@ -485,6 +479,22 @@ class MainActivity : AppCompatActivity(), AirLocation.Callback {
                         "2-Time of trip is $timeOfTrip2\n"+
                         "3-Price of your ticket is $ticketPrice\n"+
                         "4-Your Stations are \n${routs2}"
+
+
+                val dialog = AlertDialog.Builder(this)
+                    .setTitle("Save trip")
+                    .setMessage("Do you want save your trip?")
+                    .setPositiveButton("Yes"){ _,_ ->
+                        val data = Metro(couunt2,timeOfTrip2,ticketPrice ,routs2)
+                        val save = MetroDatabase.getDatabase(this).metroDao().save(data)
+                        if (save != null){
+                            Toast.makeText(this,"Data saved", Toast.LENGTH_SHORT).show()
+                        }else Toast.makeText(this,"Empty Data", Toast.LENGTH_SHORT).show()
+                    }
+                    .setNegativeButton("No"){_,_ ->
+                        Toast.makeText(this,"Data not saved",Toast.LENGTH_SHORT).show()
+                    }.create()
+                dialog.show()
             }
 
 
@@ -524,6 +534,22 @@ class MainActivity : AppCompatActivity(), AirLocation.Callback {
                     "2-Time of trip is $timeOf\n"+
                     "3-Price of your ticket is $ticketPrice\n"+
                     "4-Your Stations are \n${routss}"
+
+
+            val dialog = AlertDialog.Builder(this)
+                .setTitle("Save trip")
+                .setMessage("Do you want save your trip?")
+                .setPositiveButton("Yes"){ _,_ ->
+                    val data = Metro(couunt,timeOf,ticketPrice,routss )
+                    val save = MetroDatabase.getDatabase(this).metroDao().save(data)
+                    if (save != null){
+                        Toast.makeText(this,"Data saved", Toast.LENGTH_SHORT).show()
+                    }else Toast.makeText(this,"Empty Data", Toast.LENGTH_SHORT).show()
+                }
+                .setNegativeButton("No"){_,_ ->
+                    Toast.makeText(this,"Data not saved",Toast.LENGTH_SHORT).show()
+                }.create()
+            dialog.show()
         }
         //_________________________________________________________________
         if (statStation in line2 && endStation in line3) {
@@ -562,6 +588,21 @@ class MainActivity : AppCompatActivity(), AirLocation.Callback {
                     "3-Price of your ticket is $ticketPrice\n"+
                     "4-Your Stations are \n${rout23}"
 
+
+            val dialog = AlertDialog.Builder(this)
+                .setTitle("Save trip")
+                .setMessage("Do you want save your trip?")
+                .setPositiveButton("Yes"){ _,_ ->
+                    val data = Metro(couunt,timeOfTrip,ticketPrice,rout23 )
+                    val save = MetroDatabase.getDatabase(this).metroDao().save(data)
+                    if (save != null){
+                        Toast.makeText(this,"Data saved", Toast.LENGTH_SHORT).show()
+                    }else Toast.makeText(this,"Empty Data", Toast.LENGTH_SHORT).show()
+                }
+                .setNegativeButton("No"){_,_ ->
+                    Toast.makeText(this,"Data not saved",Toast.LENGTH_SHORT).show()
+                }.create()
+            dialog.show()
         }
         //____________________________________________________________
         if (statStation in line3 && endStation in line2) {
@@ -597,6 +638,22 @@ class MainActivity : AppCompatActivity(), AirLocation.Callback {
                     "2-Time of trip is $time\n"+
                     "3-Price of your ticket is $ticketPrice\n"+
                     "4-Your Stations are \n${rout32}"
+
+
+            val dialog = AlertDialog.Builder(this)
+                .setTitle("Save trip")
+                .setMessage("Do you want save your trip?")
+                .setPositiveButton("Yes"){ _,_ ->
+                    val data = Metro(couunt,time,ticketPrice,rout32 )
+                    val save = MetroDatabase.getDatabase(this).metroDao().save(data)
+                    if (save != null){
+                        Toast.makeText(this,"Data saved", Toast.LENGTH_SHORT).show()
+                    }else Toast.makeText(this,"Empty Data", Toast.LENGTH_SHORT).show()
+                }
+                .setNegativeButton("No"){_,_ ->
+                    Toast.makeText(this,"Data not saved",Toast.LENGTH_SHORT).show()
+                }.create()
+            dialog.show()
         }
         //_________________________________________________________
         if (indexFirst == -1 || indexEnd == -1) {
@@ -619,20 +676,36 @@ class MainActivity : AppCompatActivity(), AirLocation.Callback {
                 rout.subList(indexEnd, indexFirst + 1).reversed()
             }
 
-
             //  textView.text=("عدد المحطات : $count \n وقت الرحلة: ${count * 2} دقيقة \n سعر التذكرة: $ticketPrice جنيه \n المسار هو: $stations \n")
             textView.text = "1-Number of Stations is $count\n"+
                     "2-Time of trip is $timeForTrip\n"+
                     "3-Price of your ticket is $ticketPrice\n"+
                     "4-Your Stations are \n${stations.joinToString(",")}"
+
+
+            val dialog = AlertDialog.Builder(this)
+                .setTitle("Save trip")
+                .setMessage("Do you want save your trip?")
+                .setPositiveButton("Yes"){ _,_ ->
+                    val data = Metro(count,timeForTrip,ticketPrice, stations.joinToString(",").toString() )
+                    val save = MetroDatabase.getDatabase(this).metroDao().save(data)
+                    if (save != null){
+                        Toast.makeText(this,"Data saved in history", Toast.LENGTH_SHORT).show()
+                    }else Toast.makeText(this,"Empty Data", Toast.LENGTH_SHORT).show()
+                }
+                .setNegativeButton("No"){_,_ ->
+                    Toast.makeText(this,"Data not saved",Toast.LENGTH_SHORT).show()
+                }.create()
+            dialog.show()
+
+
         }
-
         YoYo.with(Techniques.SlideInUp).duration(1000).playOn(textView)
-
     }
 
 
 
+    //Location....
     fun myLocation(view: View){
         b = AirLocation(this, this,false,0,"")
         b.start()
@@ -675,6 +748,7 @@ class MainActivity : AppCompatActivity(), AirLocation.Callback {
         }
     }
 
+    //Permissions....
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -686,8 +760,7 @@ class MainActivity : AppCompatActivity(), AirLocation.Callback {
         b.onRequestPermissionsResult(requestCode, permissions, grantResults) // ADD THIS LINE INSIDE onRequestPermissionResult
     }
 
-
-    // get closer station
+    // Get Closer Station....
     private fun getDistance(latitude1: Double, longitude1: Double, latitude2: Double, longitude2: Double): Double {
         val earthRadius = 6371 // Radius of the earth in kilometers
         val dLat = Math.toRadians(latitude2 - latitude1)
