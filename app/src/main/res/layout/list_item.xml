@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:backgroundTint="#3E3D3D"
+    app:cardCornerRadius="10dp"
     tools:ignore="MissingClass"
     android:layout_margin="10dp"
     >
@@ -24,7 +25,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:src="@drawable/delete"
-            style="@style/Widget.AppCompat.ActionButton"/>
+            style="@style/Widget.AppCompat.ActionButton"
+            android:contentDescription="@string/image" />
 
         <TextView
             android:id="@+id/text_view_name"

@@ -24,8 +24,7 @@ class Adapter(val metro: MutableList<Metro>) : RecyclerView.Adapter<Adapter.Metr
 
     override fun getItemCount() = metro.size
 
-
-    fun deleteItem(position: Int) {
+    private fun deleteItem(position: Int) {
         if (position >= 0 && position < metro.size) {
             // Get the item that needs to be deleted
             val deletedItem = metro[position]
@@ -45,7 +44,6 @@ class Adapter(val metro: MutableList<Metro>) : RecyclerView.Adapter<Adapter.Metr
         database.metroDao().delete(metro[position])*/
         }
     }
-
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: MetroViewHolder, position: Int) {
         holder.texViewName.text = "1-Number of Stations is : ${metro[position].count.toString()}"
@@ -57,22 +55,14 @@ class Adapter(val metro: MutableList<Metro>) : RecyclerView.Adapter<Adapter.Metr
         holder.delete.setOnClickListener {
             deleteItem(position)
         }
-
-
-
     }
 
-    class  MetroViewHolder(private val view : View) : RecyclerView.ViewHolder(view){
+    class  MetroViewHolder(view : View) : RecyclerView.ViewHolder(view){
         val texViewName : TextView = view.findViewById(R.id.text_view_name)
         val textViewTrip : TextView = view.findViewById(R.id.text_view_trip)
         val textViewPrice : TextView = view.findViewById(R.id.text_view_price)
         val textViewStations : TextView = view.findViewById(R.id.text_view_stations)
         val delete : ImageButton = view.findViewById(R.id.delete)
-
-
-
     }
-
-
 }
 
